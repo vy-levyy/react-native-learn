@@ -6,91 +6,115 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import {
-  Dimensions,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Platform,
-} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import React, {Fragment} from 'react';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {theme} from './src/assets/theme';
-import {MenuRow} from './src/components/MenuRow/MenuRow';
-import {Leads} from './src/pages/Leads/Leads';
+import {LeadsScreen} from './src/screens/LeadsScreen/Leads/LeadsScreen';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {ContentScreen} from './src/screens/ContentScreen/ContentScreen';
+import {Text, View, Image} from 'react-native';
 
-const Section = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
-
-  console.log('### windowWidth ->', windowWidth);
-  console.log('### windowHeight ->', windowHeight);
-  console.log(
-    '### Dimensions.get(window).height - 273 ->',
-    Dimensions.get('window').height - 273,
-  );
-  console.log('### Platform ->', Platform)
   return (
-    <SafeAreaView style={styles.root}>
-      {/* <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} /> */}
-      {/* <Leads /> */}
-      {/* <MenuRow /> */}
-      <Leads />
-      <MenuRow />
-    </SafeAreaView>
+    <Fragment>
+      <SafeAreaView style={styles.baseSafeAreaView}>
+        <NavigationContainer>
+          <Tab.Navigator
+            screenOptions={({route}) => ({
+              headerBackgroundContainerStyle: {
+                paddingTop: 30,
+                backgroundColor: theme.colors.blue1,
+              },
+              headerStyle: {
+                borderWidth: 0,
+                shadowOffset: {height: 0},
+                backgroundColor: theme.colors.blue1,
+                height: 95,
+              },
+              headerTitle: (props, ...rest) => {
+                return <Text style={styles.title}>{props.children}</Text>;
+              },
+              headerTitleAlign: 'left',
+              tabBarStyle: {height: 70, paddingBottom: 7},
+              tabBarIcon: ({color, size}) => {
+                let iconName = 'home';
+
+                if (route.name === 'Leads') {
+                  iconName = 'home';
+                } else if (route.name === 'Content') {
+                  iconName = 'play-outline';
+                } else if (route.name === 'Activity') {
+                  iconName = 'md-play-forward-circle';
+                } else if (route.name === 'Settings') {
+                  iconName = 'md-power-sharp';
+                }
+
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+              tabBarActiveTintColor: theme.colors.primary,
+              tabBarInactiveTintColor: 'black',
+            })}>
+            <Tab.Screen
+              name="Leads"
+              component={LeadsScreen}
+              options={{
+                headerRight: () => {
+                  return (
+                    <View>
+                      <View style={styles.searcher}>
+                        <Image
+                          style={styles.searcherImg}
+                          source={require('./src/assets/images/magnifiying-glass.png')}
+                        />
+                      </View>
+                    </View>
+                  );
+                },
+              }}
+            />
+            <Tab.Screen name="Content" component={ContentScreen} />
+            <Tab.Screen name="Activity" component={ContentScreen} />
+            <Tab.Screen name="Settings" component={ContentScreen} />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </SafeAreaView>
+      <SafeAreaView style={styles.bottomSafeAreaView} />
+    </Fragment>
   );
 };
 
 const styles = StyleSheet.create({
-  root: {
+  baseSafeAreaView: {
     backgroundColor: theme.colors.blue1,
-    // height: Dimensions.get('window').height,
     flex: 1,
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  bottomSafeAreaView: {
+    backgroundColor: 'white',
+    flex: 0,
   },
-  sectionTitle: {
-    fontSize: 24,
+  title: {
+    fontSize: 32,
     fontWeight: '600',
+    color: theme.colors.secondary,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  searcher: {
+    height: 30,
+    width: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 100,
+    borderColor: theme.colors.gray1,
+    backgroundColor: 'white',
+    marginRight: 18,
   },
-  highlight: {
-    fontWeight: '700',
+  searcherImg: {
+    height: 13,
+    width: 13,
   },
 });
 

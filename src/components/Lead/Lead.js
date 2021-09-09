@@ -42,7 +42,7 @@ export const Lead = props => {
 
   const onPhonePress = useCallback(() => {
     const args = {
-      number: '9093900003',
+      number: '900',
       prompt: false,
     };
 
@@ -70,6 +70,7 @@ export const Lead = props => {
 
 const styles = StyleSheet.create({
   lead: {
+    marginHorizontal: 18,
     borderRadius: 15,
     backgroundColor: 'white',
     paddingVertical: 10,
@@ -89,13 +90,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    // marginBottom: 5,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // marginBottom: 5,
   },
   tags: {
     flexDirection: 'row',
